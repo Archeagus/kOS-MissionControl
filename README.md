@@ -14,9 +14,9 @@ be provided in msc refactored .ks files themselves.
 The goal of this project is to fabricate the infrastructure 
 for a fully functional Mission Control platform to interact 
 with and overlay the kOS interface. If the project becomes 
-comprehensive enough, the final stage of the project is to 
-produce a new Mission Control US mod that will allow users 
-to plan, execute and monitor hands-free manned and unmanned 
+comprehensive enough, the final stage will be to produce a 
+new Mission Control UI mod that will allow users to plan, 
+execute and monitor hands-free manned and unmanned 
 missions with little to no actual programming in kOS.
 
 If successful, a subset of features are also planned to add 
