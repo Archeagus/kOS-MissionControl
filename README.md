@@ -9,7 +9,31 @@ license file when possible, but for the purpose of conserving
 as much kOS disk space as possible, author comments will not 
 be provided in msc refactored .ks files themselves.
 
-//TODO: TOC for Protocol Files and Purpose
+Mission Control Protocol Hierarchy
+
+1. Preflight Check
+    a. Evaluate Flight Capability - command, comms
+    b. Evaluate Mission Capability - science, mining, refining
+    c. Evaluate Engineering - engines & fuel (by stage), electric charge 
+        storage and generation
+2. Mission Check
+    a. ID the ship and pull any related boot and mission files.
+    b. If no files are found, prompt user for mission sequence.
+    c. Once the files are loaded or mission sequence established, 
+      create the library file required for all mission tasks and 
+      copy to the ship's primary CPU.
+3. Mission Boot and/or Mission Files
+    a. Replaces preflight boot and mission check files with the 
+      dedicated mission boot and protocol files or uses generic 
+      files based on user-input sequence. Otherwise, the bare 
+      bones mission file will launch, ascend to 100km, circularize, 
+      then perform an un-controlled drop of the ship back to the body 
+      it just launched from attempting to keep the ship in retrograde 
+      and deploying the chute(s) as necessary.
+    b. Builds a single master library file from the archive libraries 
+      as necessary to complete the associated mission.
+    c. Includes scheduled and unscheduled intervals for mission updates
+      and overrides.
 
 The goal of this project is to fabricate the infrastructure 
 for a fully functional Mission Control platform to interact 
