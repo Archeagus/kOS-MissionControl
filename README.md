@@ -9,6 +9,8 @@ license file when possible, but for the purpose of conserving
 as much kOS disk space as possible, author comments will not 
 be provided in msc refactored .ks files themselves.
 
+![kOS-MissionControl](KSP-kOS-MissionControl.png)
+
 Mission Control Protocol Hierarchy
 
 1. Preflight Check
