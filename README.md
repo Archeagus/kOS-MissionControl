@@ -15,10 +15,14 @@ be provided in msc refactored .ks files themselves.
 Mission Control Protocol Hierarchy
 
 1. Preflight Check
+
 ..1. Evaluate Flight Capability - command, comms
+
 ..2. Evaluate Mission Capability - science, mining, refining
+
 ..3. Evaluate Engineering - engines & fuel (by stage), electric charge 
         storage and generation
+
 2. Mission Check
 ..1. ID the ship and pull any related boot and mission files.
 ..2. If no files are found, prompt user for mission sequence.
