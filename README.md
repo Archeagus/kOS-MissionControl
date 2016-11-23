@@ -15,31 +15,28 @@ be provided in msc refactored .ks files themselves.
 Mission Control Protocol Hierarchy
 
 1. Preflight Check
-
-..1. Evaluate Flight Capability - command, comms
-
-..2. Evaluate Mission Capability - science, mining, refining
-
-..3. Evaluate Engineering - engines & fuel (by stage), electric charge 
+  1. Evaluate Flight Capability - command, comms
+  2. Evaluate Mission Capability - science, mining, refining
+  3. Evaluate Engineering - engines & fuel (by stage), electric charge 
         storage and generation
 
 2. Mission Check
-..1. ID the ship and pull any related boot and mission files.
-..2. If no files are found, prompt user for mission sequence.
-..3. Once the files are loaded or mission sequence established, 
+  1. ID the ship and pull any related boot and mission files.
+  2. If no files are found, prompt user for mission sequence.
+  3. Once the files are loaded or mission sequence established, 
       create the library file required for all mission tasks and 
       copy to the ship's primary CPU.
 3. Mission Boot and/or Mission Files
-..1. Replaces preflight boot and mission check files with the 
+  1. Replaces preflight boot and mission check files with the 
       dedicated mission boot and protocol files or uses generic 
       files based on user-input sequence. Otherwise, the bare 
       bones mission file will launch, ascend to 100km, circularize, 
       then perform an un-controlled drop of the ship back to the body 
       it just launched from attempting to keep the ship in retrograde 
       and deploying the chute(s) as necessary.
-..2. Builds a single master library file from the archive libraries 
+  2. Builds a single master library file from the archive libraries 
       as necessary to complete the associated mission.
-..3. Includes scheduled and unscheduled intervals for mission updates
+  3. Includes scheduled and unscheduled intervals for mission updates
       and overrides.
 
 The goal of this project is to fabricate the infrastructure 
