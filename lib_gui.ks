@@ -7,25 +7,26 @@
 	
 	lock h to terminal:height. lock w to terminal:width. lock gw to round(w/2). local vn is ship:name. set ss to ship:status. lock pitch to 90 - vectorangle(up:forevector, facing:forevector).
 	
-	set fl to list("Velocity:","Bearing:",0,"Altitude:","Radar:",0,"Apoapsis:","Periapsis:",0,"Apo. ETA:","Per. ETA:",0,"SOLN:","Inclination:").
+	set fl to list("Velocity:","Bearing:","Pitch (Off):",0,"Altitude:","Radar:",0,"Apoapsis:","Periapsis:",0,"Apo. ETA:","Per. ETA:",0,"SOLN:","Inclination:").
 	set ml to list("Orbital:",0,0,"MSA:",0).
 	set el to list("Engine Stage:","Rated Thrust:","Fuel Level:",0,"ENERGY Level:","Energy Demand:", "Energy Production:",0,"Communications:","Safeties:").
 	set ft to "FLIGHT". set mt to "MISSION". set et to "ENGINEERING". set st to "SCIENCE".
-	set fvo to list(0,0,0,0,0,0,0,0,0,0,0,0,0,0). set mvo to list(0,0,0,0,0). set evo to list(0,0,0,0,0,0,0,0,0,0). set sto to list().
+	set fvo to list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0). set mvo to list(0,0,0,0,0). set evo to list(0,0,0,0,0,0,0,0,0,0). set sto to list().
 	
 	// r = row#, c = column#, s = start, e = end
 	function hr {parameter r.from {local x is 0.} until x = w step {set x to x+1.} do {print "-" at (x,r).}}
 	function vc {parameter c, sr, er. from {local x to sr.} until x = er step {set x to x+1.} do {print "|" at (c,x).}}
 	function nl {parameter r, ec is w. from {local x is 0.} until x = ec step {set x to x+1.} do {print " " at (x,r).}}
+	function clear {parameter data, r, c. from {local y is 0.} until y = data step {set y to y+1.} do {print " " at (c-2-y,r).}}
 	function prime_display {parameter f, ver. clearscreen. print ship:type:toupper + " MISSION" at (0,0). print vn:toupper at (round((w-vn:length)/2),0). print ss at (w-ss:length,0). hr(1). vc(gw,2,h-2). hr(h-2). print f at (0,h-1). print ver at (w-ver:length-1,h). gui_mission_init(). gui_flight_init(). gui_science_init(). gui_engineer_init(). }
 	function update_display {
-		parameter a, b.
+		parameter a, b, p.
 		if ship:status <> ss {
 			from {local x is w-ss:length.} until x = w step {set x to x+1.} do {print " " at (x,0).}
 			set ss to ship:status.
 			print ss at (w-ss:length,0).
 		}
-		gMission(a). gFlight(0). gScience(b). gEngineering(0).
+		gMission(a). gFlight(p). gScience(b). gEngineering(0).
 	}
 	function get_runmode {
 		if exists("1:/mission.runmode") {
@@ -45,7 +46,7 @@
 		from {local x is 0.} until x = fl:length step {set x to x+1.} do {if fl[x] <> 0 print fl[x] at (c,r+1+x).}
 	}
 	function gui_engineer_init {
-		parameter r is 18, c is 1.
+		parameter r is 19, c is 1.
 		print et at (round(gw-et:length)/2,r).
 		from {local x is 0.} until x = el:length step {set x to x+1.} do {if el[x] <> 0 print el[x] at (c,r+1+x).}
 	}
@@ -59,7 +60,7 @@
 		set mv to list(body:name, addons:biome:current,0,get_runmode(), data).
 		from {local x is 0.} until x = mv:length step {set x to x+1.} do {
 			if mv[x] <> 0 {
-				if mvo[x] <> mv[x]:tostring:length from {local y is 0.} until y = mvo[x] step {set y to y+1.} do {print " " at (w-2-y,r+x).}
+				if mvo[x] > mv[x]:tostring:length clear(mvo[x],r+x,w).
 				print mv[x] at (w-1-mv[x]:tostring:length,r+x).
 			}
 			set mvo[x] to mv[x]:tostring:length.
@@ -70,6 +71,7 @@
 		set fv to list(
 			round(sqrt(groundspeed^2 + verticalspeed^2)) + "m/s",
 			abs(round(ship:bearing,2)) + " deg",
+			round(pitch,1) + " (" + round(pitch - data) + ")",
 			0,
 			cnv_dist(altitude),
 			cnv_dist(alt:radar),
@@ -83,10 +85,10 @@
 			round(obt:lan) + " deg",
 			round(obt:inclination) + " deg"
 		).
-		if apoapsis > 0 set fv[9] to cnv_time(eta:apoapsis).
+		if apoapsis > 0 set fv[10] to cnv_time(eta:apoapsis).
 		from {local x is 0.} until x = fv:length step {set x to x+1.} do {
 			if fv[x] <> 0 {
-				if fvo[x] <> fv[x]:tostring:length from {local y is 0.} until y = fvo[x] step {set y to y+1.} do {print " " at (round(w/2)-2-y,r+x).}
+				if fvo[x] > fv[x]:tostring:length clear(fvo[x], r+x, round(w/2)).
 				print fv[x] at (round(w/2)-1-fv[x]:tostring:length,r+x).
 			}
 			set fvo[x] to fv[x]:tostring:length.
@@ -99,7 +101,7 @@
 					print data[x] at (c,r+1+x).}
 	}
 	function gEngineering {
-		parameter data, r is 19, c is 1. 
+		parameter data, r is 20, c is 1. 
 		set ev to list(
 			stage:number,
 			round(availablethrust),
