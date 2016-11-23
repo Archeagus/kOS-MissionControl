@@ -35,8 +35,8 @@ Mission Control Protocol Hierarchy
       then perform an un-controlled drop of the ship back to the body 
       it just launched from attempting to keep the ship in retrograde 
       and deploying the chute(s) as necessary.
-  2. Builds a single master library file from the archive libraries 
-      as necessary to complete the associated mission.
+  2. ~~Builds a single master library file from the archive libraries 
+      as necessary to complete the associated mission.~~
   3. Includes scheduled and unscheduled intervals for mission updates
       and overrides.
 
