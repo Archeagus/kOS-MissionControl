@@ -19,11 +19,10 @@
 		"Planetfall", drop@
 	),
     "events", lex(
-		// Time Keeper for missions. Used to pause activity during certain mission stages (such as immediately after a Stage action). To use this event, you must have a "pause(x)" command where x is the number of seconds to pause to initiate it in the mission stage and a "if not pause {" block to skip the instructions impacted by the pause. Instructions within the "if not pause" block will be skipped until the doPause event cycles through, reducing the pause level by two every second (1 every 0.5 seconds) by default.
+		// Time Keeper for missions. Used to pause activity during certain mission stages (such as immediately after a steering action). To use this event, you must have a "pause(x)" command where x is the number of seconds to pause to initiate a ReleaseAt value (current time:seconds + x) in the mission stage and a "if not paused {" block to skip the instructions impacted by the pause. Instructions within the "if not paused" block will be skipped until the ReleaseAt time is reached.
 		"doPause", {parameter mission. if time:seconds > releaseAt set paused to 0.},
-		// First pass. Create/update the terminal output and (TODO) log file.
-		"updateOutput", {
-			parameter mission.
+		// First pass. Create/update the terminal output and TODO: log file.
+		"updateOutput", {parameter mission.
 			gui["update"](a, b[vDest:name], round(trgt_pitch)).
 			},
 		// Deploy energy production.
@@ -53,9 +52,9 @@
 
 	on abort {set done to 1. return true.}
 	on gear {sas off. if throttle = 0 and not hasnode {lock steering to lookdirup(v(0,1,0), sun:position).}	gear off. return true.}
-	on AG1 {unlock steering. return true.}
-	
-  function preflight {
+
+	// TODO: MOST OF THESE NEED FINAL-PASS OPTIMIZATION
+	function preflight {
 		parameter mission.
 		set fine to eng["Final Engine"]().
 		set ship:control:pilotmainthrottle to 0.
@@ -348,7 +347,7 @@
 	
 	for f in list(
 		"lib_mission_runner.ks", "lib_hillclimb.ks", "lib_transfer.ks",	"lib_maneuver.ks",
-		"lib_inclination.ks", "lib_gui.ks", "lib_engineering.ks"
+		"lib_inc_orbit.ks", "lib_gui.ks", "lib_eng.ks"
 	) runpath("0:/library/"+f).
 
 	run_mission(mission["sequence"], mission["events"]).
