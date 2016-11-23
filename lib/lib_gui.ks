@@ -127,7 +127,7 @@
 		}
 	}
 	
-	// Update Science Variables
+	// Update Science Variables. Uses kOS-Biome addon in mission profile.
 	function gScience {
 		parameter data, r is 14, c is gw+2.
 		print "Explored Biomes ("+data:length+"):" at (c,r).
