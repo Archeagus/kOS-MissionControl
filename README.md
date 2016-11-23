@@ -10,6 +10,7 @@ as much kOS disk space as possible, author comments will not
 be provided in msc refactored .ks files themselves.
 
 ![kOS-MissionControl](KSP-kOS-MissionControl.png)
+
 **Figure 1 - MC GUI Library Output**
 
 Mission Control Protocol Hierarchy
