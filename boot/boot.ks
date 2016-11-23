@@ -1,12 +1,11 @@
-// fastboot
+// Fastboot - Modified version of u/Gaiiden and u/kvcummins boot systems on r/Kos.
 core:part:getmodule("kOSProcessor"):doevent("Open Terminal").
-// set ship:control:pilotmainthrottle to 0.
 
 // Identify the name of the vessel.
 set tmp to ship:name. 
 hudtext(tmp + " located on launch pad.", 10, 2, 18, white, true).
 set VN to "". from {local i is 0.} until i = tmp:length step {set i to i + 1.} do {if(tmp[i] = " ") {set VN to VN + "_".} else {set VN to VN + tmp[i].}	wait 0.001.
-} //log "Pre-Flight Initialization" to VN + ".log.np2".
+}
 	
 // Check for ship-specific boot or mission profiles.
 	set b to VN + ".boot.ks".
@@ -16,21 +15,23 @@ set VN to "". from {local i is 0.} until i = tmp:length step {set i to i + 1.} d
 
 	if exists("0:/boot/"+b) {
 		copypath("0:/boot/"+b,"1:/boot/boot.ks").
-		hudtext("Retrieved " + ship:name + " preflight protocols.",10,2,18,white,true).
+		hudtext("Retrieving " + ship:name + " exclusive preflight & launch protocols.",10,2,18,white,true).
 	} else {
-		hudtext(VN + " launch protocol not found.",5,2,18, white, true).		
-		hudtext("Retrieved default preflight protocols.",5,2,18,white,true).
+		hudtext("Retrieving default preflight protocols.",5,2,18,white,true).
 		copypath("0:/boot/master.boot.ks","1:/boot/boot.ks").
 	}
 
 	if exists("0:/" + m) {
 		copypath("0:/"+m,"mission.ks").
-		hudtext("Retrieved " + ship:name + " mission profile.",10,2,18,white,true).
+		// Retrieves mission file designed explicitly for vessels with this ship name.
+		hudtext("Retrieving " + ship:name + " mission profile.",10,2,18,white,true).
 	} else if core:getfield("kos disk space") <= 10000 {
-		hudtext("Retrieved basic profile.",10,2,18,white,true).
+		// Retrieve basic, low-energy, low technology mission profiles. (NO advanced action groups, no maneuver nodes.)
+		hudtext("Retrieving basic test mission profile.",10,2,18,white,true).
 		copypath("0:/basic.mission.ks","1:/mission.ks").
 	} else {
-		hudtext("Retrieved default profile.",10,2,18,white,true).
+		// Retrieve advanced defail mission, with support for advanced actions and maneuvers.
+		hudtext("Retrieving default mission profile.",10,2,18,white,true).
 		copypath("0:/master.mission.ks","1:/mission.ks").
 	}
 
