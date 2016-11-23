@@ -1,7 +1,7 @@
 # kOS-MissionControl
 This is a work in progress set of Mission Control protocols, 
 libraries and utilities for Kerbal Space Program using kOS 
-and RemoteTech.
+~~and RemoteTech~~.
 
 These protocols will leverage content from other authors on 
 Git and from the internet and they will be credited in the 
@@ -49,6 +49,6 @@ execute and monitor hands-free manned and unmanned
 missions with little to no actual programming in kOS.
 
 If successful, a subset of features are also planned to add 
-additional support for RemoteTech with realistic handling of 
+additional support for KerbNet with realistic handling of 
 unmanned missions as well as metered feature governance in 
 Career mode.
