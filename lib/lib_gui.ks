@@ -10,14 +10,14 @@
 	set fl to list("Velocity:","Bearing:","Pitch (Off):",0,"Altitude:","Radar:",0,"Apoapsis:","Periapsis:",0,"Apo. ETA:","Per. ETA:",0,"SOLN:","Inclination:").
 	set ml to list("Orbital:",0,0,"MSA:",0).
 	set el to list("Engine Stage:","Rated Thrust:","Fuel Level:",0,"ENERGY Level:","Energy Demand:", "Energy Production:",0,"Communications:","Safeties:").
-	set ft to "FLIGHT". set mt to "MISSION". set et to "ENGINEERING". set st to "SCIENCE".
-	set fvo to list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0). set mvo to list(0,0,0,0,0). set evo to list(0,0,0,0,0,0,0,0,0,0). set sto to list().
+	set ft to "FLIGHT". set mt to "MISSION". set et to "ENGINEERING". set st to "SCIENCE". set fvo to prime_labels(fl). set mvo to prime_labels(ml). set evo to prime_labels(el). set sto to list().
 	
 	// r = row#, c = column#, s = start, e = end
 	function hr {parameter r.from {local x is 0.} until x = w step {set x to x+1.} do {print "-" at (x,r).}}
 	function vc {parameter c, sr, er. from {local x to sr.} until x = er step {set x to x+1.} do {print "|" at (c,x).}}
 	function nl {parameter r, ec is w. from {local x is 0.} until x = ec step {set x to x+1.} do {print " " at (x,r).}}
 	function clear {parameter data, r, c. from {local y is 0.} until y = data step {set y to y+1.} do {print " " at (c-2-y,r).}}
+	function prime_labels {parameter sl. svo is list(). for x in sl svo:add(0). return svo.}
 	function prime_display {parameter f, ver. clearscreen. print ship:type:toupper + " MISSION" at (0,0). print vn:toupper at (round((w-vn:length)/2),0). print ss at (w-ss:length,0). hr(1). vc(gw,2,h-2). hr(h-2). print f at (0,h-1). print ver at (w-ver:length-1,h). gui_mission_init(). gui_flight_init(). gui_science_init(). gui_engineer_init(). }
 	function update_display {
 		parameter a, b, p.
