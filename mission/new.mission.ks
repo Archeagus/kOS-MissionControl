@@ -1,17 +1,16 @@
 // APEX Master Mission Profile Script w/ Kevin Gisi
-parameter vDest.
-local mfile is vDest:name:toupper + " TRANSFER/RESEARCH".
+local mfile is "MUN TRANSFER/RESEARCH".
 local ver is "ver. APEX-MMP-0.5".
 
 local ev is lex(
 	import("mce_panels"),
 	import("mce_pause"),
-	import("mce_upd_gui"),
-	import("mce_staging")
+	import("mce_staging"),
+	import("mce_upd_gui")
 ).
-local transfer is import("transfer").
-local mission is import("mission").
-local descent is import("descent").
+local transfer is import("lib_transfer").
+local mission is import("lib_protocol").
+local descent is import("lib_descent").
 
 local TARGET_ALTITUDE is 100000.
 local TARGET_MUNAR_ALTITUDE is 20000.
@@ -19,7 +18,7 @@ local TARGET_RETURN_ALTITUDE is 30000.
 local REENTRY_BURN_ALTITUDE is 100000.
 local freeze is transfer["freeze"].
 
-local vanguard_mission is mission({ parameter seq, ev, next.
+local apex_mission is mission({ parameter seq, ev, next.
   local avail_thrust is 0.
 
   seq:add({
@@ -36,7 +35,7 @@ local vanguard_mission is mission({ parameter seq, ev, next.
     lock pct_alt to alt:radar / TARGET_ALTITUDE.
     lock target_pitch to -115.23935 * pct_alt^0.4095114 + 88.963.
     lock steering to heading(90, target_pitch).
-    set avail_thrust to ship:availablethrust.
+    set avail_thrust to availablethrust.
     next().
   }).
 
@@ -205,4 +204,4 @@ local vanguard_mission is mission({ parameter seq, ev, next.
   seq:add({ if ship:status = "Landed" next(). }).
 }).
 
-export(vanguard_mission).
+export(apex_mission).
