@@ -1,1 +1,1 @@
-local mce_panels is list("mce_panels", {if altitude > atmo {panels on. ev:remove("msce_panels").}}).
+local mce_panels is list("mce_panels", {if altitude > atmo {panels on. ev:remove("mce_panels").}}).
