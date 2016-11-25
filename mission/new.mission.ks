@@ -9,7 +9,7 @@ local ev is lex(
 	import("mce_upd_gui")
 ).
 local transfer is import("lib_transfer").
-local mission is import("lib_protocol").
+local mission_control is import("lib_protocol").
 local descent is import("lib_descent").
 
 local TARGET_ALTITUDE is 100000.
@@ -18,7 +18,7 @@ local TARGET_RETURN_ALTITUDE is 30000.
 local REENTRY_BURN_ALTITUDE is 100000.
 local freeze is transfer["freeze"].
 
-local apex_mission is mission({ parameter seq, ev, next.
+local mission is mission_control({ parameter seq, ev, next.
   local avail_thrust is 0.
 
   seq:add({
@@ -204,4 +204,4 @@ local apex_mission is mission({ parameter seq, ev, next.
   seq:add({ if ship:status = "Landed" next(). }).
 }).
 
-export(apex_mission).
+export(mission).
