@@ -26,3 +26,5 @@
 		}
 	).
 }
+
+function pause {parameter p. set ReleaseAt to time+seconds + p. set paused to 1.}

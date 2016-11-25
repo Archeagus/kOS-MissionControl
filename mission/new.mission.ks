@@ -1,6 +1,6 @@
 // APEX Master Mission Profile Script w/ Kevin Gisi
 local mfile is "MUN TRANSFER/RESEARCH".
-local ver is "ver. APEX-MMP-0.5".
+local ver is "ver. APEX-MMP-0.0.5".
 
 local ev is lex(
 	import("mce_panels"),
@@ -35,7 +35,7 @@ local mission is mission_control({ parameter seq, ev, next.
     lock pct_alt to alt:radar / TARGET_ALTITUDE.
     lock target_pitch to -115.23935 * pct_alt^0.4095114 + 88.963.
     lock steering to heading(90, target_pitch).
-    set avail_thrust to availablethrust.
+    set avail_thrust to ship:availablethrust.
     next().
   }).
 
@@ -191,7 +191,13 @@ local mission is mission_control({ parameter seq, ev, next.
 
   seq:add({
     if ship:altitude < REENTRY_BURN_ALTITUDE {
-      lock steering to retrograde.
+      lock steering to retrograde. pause(5).
+	  next().
+	}
+  }).
+  
+  seq:add({
+    if not paused {
       lock throttle to 1.
       wait until ship:maxthrust < 1.
       lock throttle to 0.
