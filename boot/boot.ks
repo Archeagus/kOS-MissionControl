@@ -7,7 +7,7 @@ hudtext(tmp + " located on launch pad.", 10, 2, 18, white, true).
 set VN to "". from {local i is 0.} until i = tmp:length step {set i to i + 1.} do {if(tmp[i] = " ") {set VN to VN + "_".} else {set VN to VN + tmp[i].}	wait 0.001.
 }
 	
-// Check for ship-specific boot or mission profiles.
+// Check for ship-specific boot or mission profiles. Assign empty test profile if "Test" found in ship name.
 	set b to VN + ".boot.ks".
 	if not VN:contains("test") set m to VN + ".mission.ks". else set m to "test.mission.ks".
 
