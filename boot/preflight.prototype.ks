@@ -1,19 +1,39 @@
-// APEX Mission Control Protocol P1 - Advanced Mission Preflight Sequence
+// APEX Mission Control Protocol P0 - Basic Mission Preflight Manager
+local mfile is "PREFLIGHT MISSION MANAGER". local ver is "ver. APEX-BMPF-0.0.1".
+if not exists("1:/lib_io.ks") copypath("0:/lib/lib_io.ks", "1:/").
+runpath("1:/lib_io.ks"). import("preflight.ks")().
 core:part:getmodule("kOSProcessor"):doevent("Open Terminal").
 
-{
-	global preflight is lex(
-		"sequence", list(
-			"shipIdentification", shipIdentification@,
-			"startLog", startLog@,
-			"inventoryShip", inventoryShip@,
-			"loadMission", loadMission@,
-			"loadBoot", loadBoot@,
-			"handOff", handOff@
-		),
-		"events", lex()
-	).
+local protocol is import("lib_protocol.ks").
 
+local preflight is protocol({parameter seq, ev, next.
+
+	// Create Event Manager
+	seq:add({
+		local f is "1:/events.ks".
+		local e is queue("mce_staging.ks", "mce_pause.ks").
+		for m in ship:modulesnamed("ModuleProceduralFairing") {e:push("mce_fairings"). break.}
+		for m in ship:modulesnamed("ModuleDeployableSolarPanel") {e:push("mce_panels.ks"). break.}
+		if exists (f) deletepath(f). create(f).
+		log "local events is lex(" to f.
+		until e:length = 0 log open("0:/events/"+e:pop):readall():string + "," to f.
+		log open("0:/events/mce_gui.ks"):readall():string to f.
+		log "). export(events)." to f.
+		next().
+	}).
+	
+	// Collect Fuel Levels
+	// Build Engine Stage Lists
+	// Collect Energy Levels
+	// Create Science Checklist
+	// Test Communications
+	// Validate Ship Configuration
+	// Generate Flight Log
+}).
+
+export(preflight).
+{
+	
 	function shipIdentification {
 		parameter preflight.
 		// Identify the name of the vessel.

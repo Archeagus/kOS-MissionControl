@@ -1,1 +1,1 @@
-{local mce_panels is lex("mce_panels", {if altitude > atmo {panels on. ev:remove("mce_panels").}}). export(mce_panels).}
+"mce_panels", {if altitude > atmo {panels on. ev:remove("mce_panels").}}
