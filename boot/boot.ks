@@ -21,18 +21,18 @@ set VN to "". from {local i is 0.} until i = tmp:length step {set i to i + 1.} d
 		copypath("0:/boot/master.boot.ks","1:/boot/boot.ks").
 	}
 
-	if exists("0:/" + m) {
-		copypath("0:/"+m,"mission.ks").
+	if exists("0:/mission/" + m) {
+		copypath("0:/mission/"+m,"mission.ks").
 		// Retrieves mission file designed explicitly for vessels with this ship name.
 		hudtext("Retrieving " + ship:name + " mission profile.",10,2,18,white,true).
 	} else if core:getfield("kos disk space") <= 10000 {
 		// Retrieve basic, low-energy, low technology mission profiles. (NO advanced action groups, no maneuver nodes.)
 		hudtext("Retrieving basic test mission profile.",10,2,18,white,true).
-		copypath("0:/basic.mission.ks","1:/mission.ks").
+		copypath("0:/mission/basic.mission.ks","1:/mission.ks").
 	} else {
 		// Retrieve advanced defail mission, with support for advanced actions and maneuvers.
 		hudtext("Retrieving default mission profile.",10,2,18,white,true).
-		copypath("0:/master.mission.ks","1:/mission.ks").
+		copypath("0:/mission/master.mission.ks","1:/mission.ks").
 	}
 
 reboot.

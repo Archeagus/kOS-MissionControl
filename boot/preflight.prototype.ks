@@ -1,10 +1,11 @@
 // APEX Mission Control Protocol P0 - Basic Mission Preflight Manager
-local mfile is "PREFLIGHT MISSION MANAGER". local ver is "ver. APEX-BMPF-0.0.1".
+local mfile is "PREFLIGHT MISSION MANAGER". local ver is "ver. APEX-BMPF-0.0.3".
 if not exists("1:/lib_io.ks") copypath("0:/lib/lib_io.ks", "1:/").
 runpath("1:/lib_io.ks"). import("preflight.ks")().
 core:part:getmodule("kOSProcessor"):doevent("Open Terminal").
 
 local protocol is import("lib_protocol.ks").
+local engineering is import("lib_engineering.ks").
 
 local preflight is protocol({parameter seq, ev, next.
 
@@ -22,8 +23,98 @@ local preflight is protocol({parameter seq, ev, next.
 		next().
 	}).
 	
-	// Collect Fuel Levels
-	// Build Engine Stage Lists
+	// Configure Chutes
+	seq:add({
+		for ch in ship:modulesnamed("ModuleParachute") {
+			if ch:hasfield("min pressure") {
+				if ch:part:tostring:contains("Drogue") ch:setfield("min pressure", 0.6).
+				else ch:setfield("min pressure", 0.7).
+			}
+		}
+		next().
+	}).
+	
+	// Calculate DeltaV
+	seq:add({
+		local fuelByStage to lex(). local done to 0. local last_dV is 0.
+		local engISP to 0. local spentDV is 0. local diff is 0.
+
+		function collect_fuel {
+			parameter sn, resource_list.
+			
+			for r in resource_list {
+				if fuelByStage[sn]:haskey(r:name) {
+					set fuelByStage[sn][r:name] to fuelByStage[sn][r:name] + r:amount.
+				}
+				else fuelByStage[sn]:add(r:name,r:amount).
+			}
+		}
+
+		function get_active_engines {
+			local thr is 0. local mgt is 0.
+			clearscreen. fuelByStage:clear.
+			list engines in n.
+			for e in n {
+				if not fuelByStage:haskey(e:stage) fuelByStage:add(e:stage,lex()). 
+				if e:ignition {
+					local t is e:maxthrust*e:thrustlimit/100.
+					set thr to thr + t.
+					if e:visp = 0 set mgt to 1.
+					else set mgt to mgt + t / e:visp.
+				}
+				if e:resources:length collect_fuel(e:stage,e:resources).
+				else {
+					set p to e:parent. local done to 0.
+					until done {
+						if p:tostring:contains("fuel") {
+							collect_fuel(e:stage,p:resources).
+							set p to p:parent.
+						}
+						else set done to 1.
+					}
+				}
+			}
+			if mgt = 0 set engISP to 0.
+			else set engISP to thr/mgt.
+		}
+		
+		function calculate_deltaV {
+			parameter fbs, sp. local fm is 0.
+			local ftype is lex(
+				"LiquidFuel", 0.005,
+				"Oxydizer", 0.005,
+				"SolidFuel", 0.0075,
+				"MonoPropellent", 0.004
+			).
+			for x in ftype:keys if fbs:haskey(x) set fm to fm + fbs[x] * ftype[x].
+			return ln(ship:mass / (ship:mass-fm)) * 9.81 * sp.
+		}
+		
+		function check_staging {
+			list engines in n.
+			for e in n if e:ignition and e:flameout {stage. wait 1. break.}
+			if stage:number = 3 and availablethrust = 0 stage.
+		}
+		
+		get_active_engines().
+		stage. SAS on. lock throttle to 1.
+		set dV to calculate_deltaV(fuelByStage[stage:number],engISP).
+		set last_dV to dV.
+		until done {
+			get_active_engines().
+			if fuelByStage:haskey(stage:number) {
+				set dV to calculate_deltaV(fuelByStage[stage:number],engISP).
+				if last_dV > dV set diff to last_dV - dV.
+				set spentDV to spentDV + diff.
+				set last_dV to dV.
+			}
+			check_staging().
+			print "Active DV: " + round(DV) at (0,14).
+			print "Spent DV:  " + round(spentDV) at (0,15).
+			wait 0.1.
+		}
+	}).
+		
 	// Collect Energy Levels
 	// Create Science Checklist
 	// Test Communications
@@ -54,7 +145,7 @@ export(preflight).
 	function startLog {
 		parameter preflight.
 		
-		set logStr to "[" + time:calendar + "] Initializing new log sequence for " + VN.
+		set logStr to "[" + time:calendar + "] Initializing new log for " + VN.
 		log logStr to "0:/logs/" + VN + ".log".
 		
 		preflight["next"]().
