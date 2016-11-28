@@ -2,7 +2,8 @@
 	global gui is lex(
 		"countdown", cnt_down@,
 		"initialize", prime_display@,
-		"update", update_display@
+		"update", update_display@,
+		"action", action@
 	).
 	
 	lock h to terminal:height. lock w to terminal:width. lock gw to round(w/2). local vn is ship:name. set ss to ship:status. lock pitch to 90 - vectorangle(up:forevector, facing:forevector).
@@ -46,6 +47,8 @@
 		}
 		gMission(a). gFlight(p). gScience(b). gEngineering(0).
 	}
+	
+	function action {parameter a. hudtext(a,5,2,30,green,false). return a.}
 	
 	// TODO: Leverage new mission runner runmode format.
 	function get_runmode {

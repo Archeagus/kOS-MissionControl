@@ -1,5 +1,19 @@
 {
-	local tAlt is 150000. local mDir is 90. local vDest is Mun. local dAlt is 405000. local dInc is 85.2.local done is 0. lock soln to obt:lan. lock soi to obt:inclination. set i to list(100,10,1). lock sn to stage:number. 	local dHeading is lookdirup(v(0,1,0), sun:position). local atmo is max(body:atm:height,30000). local a is " ". local paused is 0. local releaseAt is 0.
+	local tAlt is 150000.
+	local mDir is 90.
+	local vDest is Mun.
+	local dAlt is 405000.
+	local dInc is 85.2.
+	local done is 0.
+	lock soln to obt:lan.
+	lock soi to obt:inclination.
+	set i to list(100,10,1).
+	lock sn to stage:number.
+	local dHeading is lookdirup(v(0,1,0), sun:position).
+	local atmo is max(body:atm:height,30000).
+	local a is " ".
+	local paused is 0.
+	local releaseAt is 0.
 	
 
 	global mission is lex(
