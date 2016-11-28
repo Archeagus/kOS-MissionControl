@@ -36,6 +36,4 @@ function action {parameter a. set status to a. hudtext(a,5,2,30,green,false).}
 
 function countdown {parameter c, msg is "LAUNCH". until not c {hudtext(c,1,4,72,white,false). set c to c-1. wait 1.} hudtext(msg,1,4,72,green,false).}
 
-function kill {parameter e. ev:remove(e).}
-
 
