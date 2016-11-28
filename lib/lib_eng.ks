@@ -1,11 +1,11 @@
 {
 	local lfile is "APEX Mission Control Engineering Library". local ver is "0.1.5".
 	local fuelByStage to lex().
-	global engineering is lex(
+	global eng is lex(
 		"final_burn_stage", chk_engines@,
 		"report_fuel", report_fuel@,
 		"get_active_engines", get_active_engines@,
-		"get_deltaV", get_deltaV@,
+		"get_deltaV", get_deltaV@
 	).
 
 	function chk_engines {list engines in n. set l to stage:number. for e in n {if e:stage < l set l to e:stage.} return l.}
@@ -67,26 +67,29 @@
 				if e:visp = 0 set mgt to 1.
 				else set mgt to mgt + t / e:visp.
 			}
+		}
 		if mgt = 0 set actISP to 0.
 		else set actISP to thr/mgt.	
 		for x in ftype:keys if fbs:haskey(x) set fm to fm + fbs[x][0] * ftype[x].
 		return ln(ship:mass / (ship:mass-fm)) * 9.81 * actISP.
 	}
-	
-	get_active_engines().
-	set dV to calculate_deltaV(fuelByStage[stage:number]).
-	set last_dV to dV.
-	until done {
-		get_active_engines().
-		if fuelByStage:haskey(stage:number) {
-			set dV to calculate_deltaV(fuelByStage[stage:number]).
-			if last_dV > dV set diff to last_dV - dV.
-			set spentDV to spentDV + diff.
-			set last_dV to dV.
-		}
-		report_fuel().
-		print "Active DV: " + round(DV) at (0,14).
-		print "Spent DV:  " + round(spentDV) at (0,15).
-		wait 0.1.
-	}
 }
+
+export(eng).
+
+	//get_active_engines().
+	//set dV to calculate_deltaV(fuelByStage[stage:number]).
+	//set last_dV to dV.
+	//until done {
+	//	get_active_engines().
+	//	if fuelByStage:haskey(stage:number) {
+	//		set dV to calculate_deltaV(fuelByStage[stage:number]).
+	//		if last_dV > dV set diff to last_dV - dV.
+	//		set spentDV to spentDV + diff.
+	//		set last_dV to dV.
+	//	}
+	//	report_fuel().
+	//	print "Active DV: " + round(DV) at (0,14).
+	//	print "Spent DV:  " + round(spentDV) at (0,15).
+	//	wait 0.1.
+	//}
