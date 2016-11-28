@@ -3,11 +3,9 @@ local mfile is "MUN TRANSFER/RESEARCH".
 local ver is "ver. APEX-MMP-0.0.5".
 
 local events is import("events.ks").
-local gui is import("lib_gui.ks").
-local eng is import("lib_eng.ks").
-local transfer is import("lib_transfer").
-local mission_control is import("lib_protocol").
-local descent is import("lib_descent").
+local transfer is import("lib_transfer.ks").
+local mission_control is import("lib_protocol.ks").
+local descent is import("lib_descent.ks").
 
 local TARGET_ALTITUDE is 100000.
 local TARGET_MUNAR_ALTITUDE is 20000.
@@ -15,21 +13,22 @@ local TARGET_RETURN_ALTITUDE is 30000.
 local REENTRY_BURN_ALTITUDE is 100000.
 local freeze is transfer["freeze"].
 local ATMO is max(body:atm:height,30000).
+lock sn to stage:number.
+local FINE is 2.
 
 local mission is mission_control({ parameter seq, ev, next.
+	for k in events:keys ev:add(k, events[k]).
 	local status is "".
+	
 	seq:add({
 		set ship:control:pilotmainthrottle to 0.
-		gear off.
-		gui["countdown"](5).
-		lock throttle to 1.
+		gear off. lock throttle to 1.
 		lock steering to heading(90, 90).
-		wait 10.
+		countdown(5). stage.
 		next().
 	}).
 	
 	seq:add({
-		stage. wait 5.
 		action("Beginning Ascent Burn").
 		lock pct_alt to alt:radar / TARGET_ALTITUDE.
 		lock target_pitch to -115.23935 * pct_alt^0.4095114 + 88.963.
@@ -128,7 +127,7 @@ local mission is mission_control({ parameter seq, ev, next.
 	seq:add({ if ship:crew():length = 1 next(). }).
 
 	seq:add({
-		action("Launching"). gui["countdown"](5).
+		action("Launching"). countdown(5).
 		lock steering to heading(90, 90).
 		lock throttle to 1.
 		wait 2.
@@ -139,7 +138,7 @@ local mission is mission_control({ parameter seq, ev, next.
 	
 	seq:add({
 		if apoapsis > TARGET_MUNAR_ALTITUDE {
-			set status to gui["countdown"]("Ascent Burn Complete").
+			action("Ascent Burn Complete").
 			lock throttle to 0.
 			next().
 		}

@@ -19,7 +19,7 @@
 			return {
 				until r>=s:length	{
 					s[r]().
-					for v in e:values v().
+					for k in e:keys if e[k]() e:remove(k).
 					wait 0.
 				}
 			}.
@@ -27,5 +27,15 @@
 	).
 }
 
+// Global Functions
 global paused is 0. global releaseAt is 0.
 function pause {parameter p. set releaseAt to time:seconds + p. set paused to 1.}
+
+global status is "".
+function action {parameter a. set status to a. hudtext(a,5,2,30,green,false).}
+
+function countdown {parameter c, msg is "LAUNCH". until not c {hudtext(c,1,4,72,white,false). set c to c-1. wait 1.} hudtext(msg,1,4,72,green,false).}
+
+function kill {parameter e. ev:remove(e).}
+
+

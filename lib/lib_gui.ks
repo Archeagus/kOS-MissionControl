@@ -2,8 +2,7 @@
 	global gui is lex(
 		"countdown", cnt_down@,
 		"initialize", prime_display@,
-		"update", update_display@,
-		"action", action@
+		"update", update_display@
 	).
 	
 	lock h to terminal:height. lock w to terminal:width. lock gw to round(w/2). local vn is ship:name. set ss to ship:status. lock pitch to 90 - vectorangle(up:forevector, facing:forevector).
@@ -15,7 +14,7 @@
 	// Set static titles.
 	set ft to "FLIGHT". set mt to "MISSION". set et to "ENGINEERING". set st to "SCIENCE".
 	// Set section value organizers (for cleaning old entries when smaller new entries are encountered).
-	set fvo to prime_VOs(fl). set mvo to prime_labels(ml). set evo to prime_labels(el). set sto to list().
+	set fvo to prime_labels(fl). set mvo to prime_labels(ml). set evo to prime_labels(el). set sto to list().
 	
 	// r = row#, c = column#, s = start coord, e = end coord
 	
@@ -32,7 +31,7 @@
 	function clear {parameter data, r, c. from {local y is 0.} until y = data step {set y to y+1.} do {print " " at (c-2-y,r).}}
 	
 	// Value Organizer primer.
-	function prime_labels {parameter sl. svo is list(). for x in sl svo:add(0). return svo.}
+	function prime_labels {parameter sl, svo is list(). for x in sl svo:add(0). return svo.}
 	
 	// Initial display generation. Called from preflight step of mission sequence.
 	function prime_display {parameter f, ver. clearscreen. print ship:type:toupper + " MISSION" at (0,0). print vn:toupper at (round((w-vn:length)/2),0). print ss at (w-ss:length,0). hr(1). vc(gw,2,h-2). hr(h-2). print f at (0,h-1). print ver at (w-ver:length-1,h). gui_mission_init(). gui_flight_init(). gui_science_init(). gui_engineer_init(). }
@@ -47,9 +46,7 @@
 		}
 		gMission(a). gFlight(p). gScience(b). gEngineering(0).
 	}
-	
-	function action {parameter a. hudtext(a,5,2,30,green,false). return a.}
-	
+		
 	// TODO: Leverage new mission runner runmode format.
 	function get_runmode {
 		if exists("1:/mission.runmode") {
@@ -156,13 +153,6 @@
 		from {local x is 0.} until x = ev:length step {set x to x+1.} do {if ev[x] <> 0 print ev[x] at (round(w/2)-1-ev[x]:tostring:length,r+x).}
 	}
 	
-	// Count down to C seconds on HUD, then display MSG. Default "LAUNCH". Also used for mission critical/ETA actions.
-	function cnt_down {
-		parameter c, msg is "LAUNCH".
-		until not c {hudtext(c,1,4,72,white,false). set c to c-1. wait 1.}
-		hudtext(msg,1,4,72,green,false).
-	}
-	
 	// Convert mission distances.
 	function cnv_dist {
 		parameter data.
@@ -182,3 +172,5 @@
 		return d.
 	}
 }
+
+export(gui).
