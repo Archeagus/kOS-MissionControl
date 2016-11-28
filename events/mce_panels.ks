@@ -1,1 +1,1 @@
-"mce_panels", {if altitude > atmo {panels on. ev:remove("mce_panels").}}
+"mce_panels", {if altitude > atmo {panels on. return 1.}}
