@@ -19,7 +19,7 @@
     lock throttle to t.
     until vdot(n:burnvector, v) < 0 {
       if ship:maxthrust < 0.1 {
-        stage.
+        stage. wait 1. if availablethrust = 0 and stage:number > 2 {stage.}
         wait 0.1.
         if ship:maxthrust < 0.1 {
           for part in ship:parts {
