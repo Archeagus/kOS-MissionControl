@@ -27,4 +27,5 @@
 	).
 }
 
-function pause {parameter p. set ReleaseAt to time+seconds + p. set paused to 1.}
+global paused is 0. global releaseAt is 0.
+function pause {parameter p. set releaseAt to time:seconds + p. set paused to 1.}
