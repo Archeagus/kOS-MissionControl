@@ -1,1 +1,1 @@
-"mce_gui", {gui["update"](a, b[body:name], round(trgt_pitch)).}
+"mce_gui", {gui["update"](status, BIO[body:name], round(target_pitch)).}
