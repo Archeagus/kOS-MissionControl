@@ -15,22 +15,33 @@ local preflight is protocol({parameter seq, ev, next.
 		next().
 	}).
 	
+	// Create ship log.
+	seq:add({
+		global sl is "0:/logs/"+ VN + ".log".
+		if exists(sl) deletepath(sl).
+		output(tmp + " log created.",sl,true).
+		next().
+	}).
+	
 	// Create Event Manager
 	seq:add({
-		print "Generating event management system.".
+		output("Generating event management system.",sl,true). wait 1.
 		local f is "1:/events.ks".
-		local e is queue("mce_staging.ks").
-		print "Auto-stage support enabled.".
+		local e is queue("mce_staging.ks", "mce_gui.ks").
+		output("Auto-stage support enabled.",sl,true). wait 1.
+		output("Mission Control terminal support enabled.",sl,true). wait 1.
 		for m in ship:modulesnamed("ModuleProceduralFairing") {
-			print "Fairing deployment enabled.". e:push("mce_fairings"). break.}
+			select(m:part). wait 1. output("Fairing deployment enabled.",sl,true).
+			e:push("mce_fairings"). dsel(m:part). break.}
 		for m in ship:modulesnamed("ModuleDeployableSolarPanel") {
-			print "Power pruduction support enabled.". e:push("mce_panels.ks"). break.}
+			select(m:part). wait 1. output("Power pruduction support enabled.",sl,true).
+			e:push("mce_panels.ks"). dsel(m:part). break.}
 		if exists (f) deletepath(f). create(f).
 		log "local events is lex(" to f.
 		until e:length = 0 log open("0:/events/"+e:pop):readall():string + "," to f.
 		log open("0:/events/mce_pause.ks"):readall():string to f.
 		log "). export(events)." to f.
-		print "SWS support enabled.".
+		output("SWS support enabled.",sl,true).
 		next().
 	}).
 	
@@ -38,11 +49,13 @@ local preflight is protocol({parameter seq, ev, next.
 	seq:add({
 		for ch in ship:modulesnamed("ModuleParachute") {
 			if ch:hasfield("min pressure") {
+				select(ch:part).
 				if ch:part:tostring:contains("Drogue") ch:setfield("min pressure", 0.6).
 				else ch:setfield("min pressure", 0.7).
+				wait 1. dsel(ch:part).
 			}
 		}
-		print "Chute(s) primed.".
+		output("Chute(s) primed.",sl,true).
 		next().
 	}).
 			
@@ -69,11 +82,13 @@ local preflight is protocol({parameter seq, ev, next.
 			set l to lf+"shipManifest.txt".
 			if exists(l) deletepath(l).
 			for sp in sParts {
+				select(sp). wait 0.5.
 				print "Logging " + sp:name + " to ship manifest.".
 				log "=================================================" to l.
 				log sp to l.
-				if sp:modules:length {log "Modules" to l. wait 0.5. log sp:modules to l.}
-				if sp:children:length {log "Children" to l.	wait 0.5. log sp:children to l.}
+				if sp:modules:length {log "Modules" to l. wait 0.75. log sp:modules to l.}
+				if sp:children:length {log "Children" to l.	wait 0.75. log sp:children to l.}
+				dsel(sp).
 			}
 			next().
 		}).
