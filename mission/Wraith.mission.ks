@@ -1,29 +1,35 @@
 // APEX Master Mission Profile Script w/ Kevin Gisi
-local mfile is "MUN LANDING/RESEARCH".
+local mfile is "MINMUS LANDING/RESEARCH".
 local ver is "ver. APEX-MMP-0.0.8".
 
 local events is import("events.ks").
 local transfer is import("lib_transfer.ks").
 local mission_control is import("lib_protocol.ks").
 local descent is import("lib_descent.ks").
+local adjust is import("lib_inc_orbit.ks").
+local gui is import("lib_gui.ks").
+local biomes is import("lib_biomes.ks").
 
 local TARGET_ALTITUDE is 100000.
-local TARGET_MUNAR_ALTITUDE is 20000.
+local TARGET_DESTINY_ALTITUDE is 20000.
 local TARGET_RETURN_ALTITUDE is 30000.
 local REENTRY_BURN_ALTITUDE is 100000.
 local freeze is transfer["freeze"].
 local ATMO is max(body:atm:height,30000).
+local BIO is retrieve_biomes().
 lock sn to stage:number.
 local FINE is 2.
+local DESTINY is Minmus.
 
 local mission is mission_control({ parameter seq, ev, next.
 	for k in events:keys ev:add(k, events[k]).
-	local status is "".
+	local status is "". set target_pitch to 90.
 	
 	seq:add({
 		set ship:control:pilotmainthrottle to 0.
 		gear off. lock throttle to 1.
 		lock steering to heading(90, 90).
+		gui["initialize"](mfile,ver).
 		countdown(5). stage.
 		next().
 	}).
@@ -56,35 +62,42 @@ local mission is mission_control({ parameter seq, ev, next.
 			next().
 		}
 	}).
-
+	
 	seq:add({
-		action("Seeking Mun Transfer").
-		transfer["seek_SOI"](Mun, 0).
+		action("Matching Inclination").
+		set_inc_lan(DESTINY:orbit:inclination, DESTINY:orbit:lan).
 		transfer["exec"](true).
 		next().
 	}).
 
 	seq:add({
-		if not ship:obt:hasnextpatch {
-			action("Altering Course").
-			local correction_time is time:seconds + (eta:apoapsis / 4).
-			transfer["seek_SOI"](Mun, 0, freeze(correction_time)).
-			transfer["exec"](true).
-			wait 1.
-		}
+		action("Seeking " + DESTINY:name + " Transfer").
+		transfer["seek_SOI"](DESTINY, 0).
+		transfer["exec"](true).
 		next().
 	}).
 
 	seq:add({
-		if body <> Mun and eta:transition > 60 {
-			action("Waiting for Transfer").
-			warpto(time:seconds + eta:transition).
+		if ship:obt:hasnextpatch if ship:obt:nextpatch:body:name = DESTINY:name next().
+		else {
+			action("Altering Course").
+			local correction_time is time:seconds + (eta:apoapsis / 4).
+			transfer["seek_SOI"](DESTINY, 0, freeze(correction_time)).
+			transfer["exec"](true).
+			wait 1.
 		}
-		if body = Mun next().
 	}).
 
 	seq:add({
-		if body = Mun {
+		if body <> DESTINY and eta:transition > 60 {
+			action("Waiting for Transfer").
+			warpto(time:seconds + eta:transition).
+		}
+		if body = DESTINY next().
+	}).
+
+	seq:add({
+		if body = DESTINY {
 			wait 30.
 			action("Perparing Descent").
 			transfer["seek"](
@@ -101,19 +114,16 @@ local mission is mission_control({ parameter seq, ev, next.
 	}).
 
 	seq:add({
-		if alt:radar < 120000 {
-			set warp to 0.
-			next().
-		} else {
-			set warp to 4.
-		}
+		hudtext(round(verticalspeed),30,4,36,red,false).
+		if alt:radar > 120000 warpto(time:seconds + eta:periapsis - 300).
+		next().
 	}).
 
 	seq:add({
 		gear on.
-		action("Begin Decelleration Burn").
+		action("Begin Deceleration Burn").
 		descent["suicide_burn"](3000).
-		if stage:number >= 2 {
+		if stage:number >= 4 {
 			lock throttle to 0. wait 0.1. stage. wait 1. stage.
 		}
 		action("Seeking Optimal LZ").
@@ -133,12 +143,12 @@ local mission is mission_control({ parameter seq, ev, next.
 		lock throttle to 1.
 		wait 2. gear off.
 		lock steering to heading(90, 45).
-		action("Mun Ascent Burn").
+		action(DESTINY:name + " Ascent Burn").
 		next().
 	}).
 	
 	seq:add({
-		if apoapsis > TARGET_MUNAR_ALTITUDE {
+		if apoapsis > TARGET_DESTINY_ALTITUDE {
 			action("Ascent Burn Complete").
 			lock throttle to 0.
 			next().

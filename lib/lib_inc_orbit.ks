@@ -46,3 +46,5 @@ function set_inc_lan {
 	set inc_node:ETA to node_eta.
 	add inc_node.
 }
+
+export(0).

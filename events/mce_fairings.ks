@@ -1,1 +1,1 @@
-"mce_fairings", {if altitude > 0.65 * atmo for m in ship:modulesnamed("ModuleProceduralFairing") {if m:hasevent("deploy") {m:doevent("deploy"). wait 0.1.} return 1.}}
+"mce_fairings", {if altitude > 0.75 * atmo for m in ship:modulesnamed("ModuleProceduralFairing") {if m:hasevent("deploy") {m:doevent("deploy"). wait 0.1.} return 1.}}

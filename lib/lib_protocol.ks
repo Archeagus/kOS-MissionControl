@@ -36,4 +36,11 @@ function action {parameter a. set status to a. hudtext(a,5,2,30,green,false).}
 
 function countdown {parameter c, msg is "LAUNCH". until not c {hudtext(c,1,4,72,white,false). set c to c-1. wait 1.} hudtext(msg,1,4,72,green,false).}
 
+function output {
+	parameter msg, f, io is false. hudtext(msg,10,3,20,green,false).
+	if io print msg.
+	// log "["+time:hour+":"+time:minute+":"+round(time:second)+"] "+msg to f.
+}
 
+function select {parameter p, c is green. set h to highlight(p, c).}
+function dsel {parameter p. set h to highlight(p, white). set h:enabled to false.}

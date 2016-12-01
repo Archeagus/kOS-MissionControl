@@ -1,6 +1,5 @@
 {
 	global gui is lex(
-		"countdown", cnt_down@,
 		"initialize", prime_display@,
 		"update", update_display@
 	).
@@ -47,15 +46,6 @@
 		gMission(a). gFlight(p). gScience(b). gEngineering(0).
 	}
 		
-	// TODO: Leverage new mission runner runmode format.
-	function get_runmode {
-		if exists("1:/mission.runmode") {
-			local lm is open("1:/mission.runmode"):readall():string.
-			return lm.
-		}
-		else return " ".
-	}
-	
 	// Initiate Mission Section
 	function gui_mission_init {
 		parameter r is 2, c is gw+2.
@@ -87,7 +77,7 @@
 	// Update Mission Variables
 	function gMission {
 		parameter data, r is 3, c is gw+2.
-		set mv to list(body:name, addons:biome:current,0,get_runmode(), data).
+		set mv to list(body:name, addons:biome:current,0,0, data).
 		from {local x is 0.} until x = mv:length step {set x to x+1.} do {
 			if mv[x] <> 0 {
 				if mvo[x] > mv[x]:tostring:length clear(mvo[x],r+x,w).

@@ -45,22 +45,26 @@
     parameter t, r, n, p, fitness,
               data is list(t, r, n, p),
               fit is orbit_fitness(fitness@).
-    set data to optimize(data, fit, 100).
+	set mapview to true.
+    set data to optimize(data, fit, 25).
     set data to optimize(data, fit, 10).
     set data to optimize(data, fit, 1).
-    fit(data). wait 0. return data.
+    fit(data). wait 0. set mapview to false.
+	return data.
   }
 
   function seek_SOI {
     parameter target_body, target_periapsis,
-              start_time is time:seconds + 600.
+              start_time is time:seconds + 300.
     local data is seek(start_time, 0, 0, 500, {
-      parameter mnv.
-      if transfers_to(mnv:orbit, target_body) return 1.
-      return -closest_approach(
-                target_body,
-                time:seconds + mnv:eta,
-                time:seconds + mnv:eta + mnv:orbit:period).
+		parameter mnv.
+		if transfers_to(mnv:orbit, target_body) return 1.
+		if hasnode if nextnode:obt:hasnextpatch
+			if nextnode:obt:nextpatch:name = "<unnamed>" return -INFINITY.
+		return -closest_approach(
+			target_body,
+			time:seconds + mnv:eta,
+			time:seconds + mnv:eta + mnv:orbit:period).
     }).
     return seek(data[0], data[1], data[2], data[3], {
       parameter mnv.
