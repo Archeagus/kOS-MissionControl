@@ -3,6 +3,8 @@ local mfile is "PREFLIGHT MISSION MANAGER". local ver is "ver. APEX-BMPF-0.0.8".
 core:part:getmodule("kOSProcessor"):doevent("Open Terminal").
 
 local protocol is import("lib_protocol.ks").
+function select {parameter p, c is green. set h to highlight(p, c).}
+function dsel {parameter p. set h to highlight(p, white). set h:enabled to false.}
 local preflight is protocol({parameter seq, ev, next.
 	local logging is 0.
 

@@ -41,6 +41,3 @@ function output {
 	if io print msg.
 	// log "["+time:hour+":"+time:minute+":"+round(time:second)+"] "+msg to f.
 }
-
-function select {parameter p, c is green. set h to highlight(p, c).}
-function dsel {parameter p. set h to highlight(p, white). set h:enabled to false.}
