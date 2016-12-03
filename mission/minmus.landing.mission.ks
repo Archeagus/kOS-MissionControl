@@ -18,7 +18,7 @@ local freeze is transfer["freeze"].
 local ATMO is max(body:atm:height,30000).
 local BIO is retrieve_biomes().
 lock sn to stage:number.
-local FINE is 2.
+local MES is 2.
 local DESTINY is Minmus.
 
 local mission is mission_control({ parameter seq, ev, next.
