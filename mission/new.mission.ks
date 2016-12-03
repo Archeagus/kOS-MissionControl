@@ -14,7 +14,7 @@ local REENTRY_BURN_ALTITUDE is 100000.
 local freeze is transfer["freeze"].
 local ATMO is max(body:atm:height,30000).
 lock sn to stage:number.
-local FINE is 2.
+local MES is 2.
 
 local mission is mission_control({ parameter seq, ev, next.
 	for k in events:keys ev:add(k, events[k]).
