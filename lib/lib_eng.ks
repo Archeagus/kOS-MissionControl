@@ -2,7 +2,7 @@
 	local lfile is "APEX Mission Control Engineering Library". local ver is "0.1.5".
 	local fuelByStage to lex().
 	global eng is lex(
-		"final_burn_stage", chk_engines@,
+		"main_engine_stage", chk_engines@,
 		"report_fuel", report_fuel@,
 		"get_active_engines", get_active_engines@,
 		"get_deltaV", get_deltaV@
