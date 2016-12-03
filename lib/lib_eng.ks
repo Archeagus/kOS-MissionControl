@@ -4,20 +4,14 @@
 	global eng is lex(
 		"main_engine_stage", chk_engines@,
 		"report_fuel", report_fuel@,
-		"get_active_engines", get_active_engines@,
+		"get_burn", get_active_engines@,
 		"get_deltaV", get_deltaV@
 	).
 
 	function chk_engines {list engines in n. set l to stage:number. for e in n {if e:stage < l set l to e:stage.} return l.}
 	
-	function report_fuel {
-		parameter sn.
-		if fuelByStage:haskey(sn) local report is fuelByStage[sn].
-		set k to report:keys.
-		from {local x is 0.} until x = k:length step {set x to x+1.} do {
-			print k[x] + ": " + round(report[k[x]][0]) + "/" + report[k[x]][1] + "  " at (0,14+x).
-		}
-	}
+	// Returns a lexicon with fuel type as the key, fuel amount/capacity as list value for each key.
+	function report_fuel {parameter s. if fuelByStage:haskey(s) return fuelByStage[s]. else return 0.}
 
 	function count_fuel {
 		parameter sn, resource_list.

@@ -9,7 +9,7 @@
 	// Set static section labels. TODO: Change to dynamic with dedicated Flight, Mission, Engineering and Science libraries later.
 	set fl to list("Velocity:","Bearing:","Pitch (Off):",0,"Altitude:","Radar:",0,"Apoapsis:","Periapsis:",0,"Apo. ETA:","Per. ETA:",0,"SOLN:","Inclination:").
 	set ml to list("Orbital:",0,0,"MSA:",0).
-	set el to list("Engine Stage:","Rated Thrust:","Fuel Level:",0,"ENERGY Level:","Energy Demand:", "Energy Production:",0,"Communications:","Safeties:").
+	set el to list("Engine Stage:","Rated Thrust:","Fuel Level:",0,"ENERGY Level:","Energy Cap:",0,"Communications:","Safeties:"). set elm to el.
 	// Set static titles.
 	set ft to "FLIGHT". set mt to "MISSION". set et to "ENGINEERING". set st to "SCIENCE".
 	// Set section value organizers (for cleaning old entries when smaller new entries are encountered).
@@ -128,19 +128,41 @@
 	// Update Engineering Variables
 	function gEngineering {
 		parameter data, r is 20, c is 1. 
+		list resources in res.
+		for r in res {
+			if r:name = "electriccharge" {
+				set energy_cap to energy_cap + round(r:capacity).
+				set energy_cur to energy_cur + round(r:amount).
+			}
+		}
 		set ev to list(
 			stage:number,
 			round(availablethrust),
+			" ",
 			0,
-			0,
-			0,
-			0,
-			0,
+			round(energy_cur),
+			round(energy_cap),
 			0,
 			"On",
 			"Off"
 		).
-		from {local x is 0.} until x = ev:length step {set x to x+1.} do {if ev[x] <> 0 print ev[x] at (round(w/2)-1-ev[x]:tostring:length,r+x).}
+		set fuel to eng["get_burn"].
+		if fuel{
+			set el to elm. set l to 0.
+			for k in fuel:keys {
+				if not el:contains(k) {
+					el:insert(3+l," "+k:toupper). ev:insert(3+l,fuel[k]:toupper).
+					evo:insert(3+l,ev[3+l]:length+1).
+					set l to l+1.
+				}
+			}
+		}
+		from {local x is 0.} until x = ev:length step {set x to x+1.} do {
+			if ev[x] <> 0 {
+				if evo[x] > ev[x]:tostring:length clear(evo[x], r+x, round(w/2)).
+				print ev[x] at (round(w/2)-1-ev[x]:tostring:length,r+x).
+			}
+		}
 	}
 	
 	// Convert mission distances.
