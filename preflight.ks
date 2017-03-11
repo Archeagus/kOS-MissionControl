@@ -40,8 +40,12 @@
 				e:push("mce_fairings"). dsel(m:part). break.
 			}
 			for m in ship:modulesnamed("ModuleDeployableSolarPanel") {
-				select(m:part). wait 1. output("Power pruduction support enabled.",sl,true).
+				select(m:part). wait 1. output("Power pruduction enabled.",sl,true).
 				e:push("mce_panels.ks"). dsel(m:part). break.
+			}
+			for m in ship:modulesnamed("ModuleDeployableAntenna") {
+				select(m:part). wait 1. output("Communications enabled.",sl,true).
+				e:push("mce_comms.ks"). dsel(m:part). break.
 			}
 			if exists (f) deletepath(f). create(f).
 			log "local events is lex(" to f.
@@ -77,19 +81,19 @@
 				list engines in sEng.
 				list sensors in sSens.
 				list elements in sEl.
+				local fl is list("CPUs", "Engines", "Sensors", "Elem", "Manifest").
 				
 				local lf is "0:/logs/"+VN+".".
-				if exists(lf+"shipCPUs.txt") deletepath(lf+"shipCPUs.txt").
-				if exists(lf+"shipEngines.txt") deletepath(lf+"shipEngines.txt").
-				if exists(lf+"shipSensors.txt") deletepath(lf+"shipSensors.txt").
-				if exists(lf+"shipElem.txt") deletepath(lf+"shipElem.txt").
-				log cpus to lf+"shipCPUs.txt". print "Logging CPU configuration.".
-				log sEng to lf+"shipEngines.txt". print "Logging ship engines.".
-				log sSens to lf+"shipSensors.txt". print "Logging sensor configuration.".
-				log sEl to lf+"shipElem.txt". print "Logging element data.".
+				for ct in fl {
+					set l to lf+ct+".txt".
+					if exists(l) deletepath(l).
+				}
+				log cpus to lf+fl[0]+".txt". print "Logging CPU configuration.".
+				log sEng to lf+fl[1]+".txt". print "Logging ship engines.".
+				log sSens to lf+fl[2]+".txt". print "Logging sensor configuration.".
+				log sEl to lf+fl[3]+".txt". print "Logging element data.".
 				
-				set l to lf+"shipManifest.txt".
-				if exists(l) deletepath(l).
+				set l to lf+fl[4]+".txt".
 				for sp in sParts {
 					select(sp). wait 0.5.
 					print "Logging " + sp:name + " to ship manifest.".
