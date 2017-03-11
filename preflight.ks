@@ -1,6 +1,6 @@
 {
 	// APEX Mission Control Protocol P1 - Basic Mission Preflight Manager
-	local mfile is "PREFLIGHT MISSION MANAGER". local ver is "ver. APEX-BMPF-0.1.0".
+	local mfile is "PREFLIGHT MISSION MANAGER". local ver is "ver. APEX-BMPF-0.1.1".
 
 	local protocol is import("lib_protocol.ks").
 	function select {parameter p, c is green. set h to highlight(p, c).}
@@ -30,15 +30,19 @@
 			output("Generating event management system.",sl,true). wait 1.
 			local f is "1:/events.ks".
 			local e is queue("mce_staging.ks").
-			if core:getfield("kos disk space") > 10000 { e:push("mce_gui.ks"). }
 			output("Auto-stage support enabled.",sl,true). wait 1.
-			output("Mission Control terminal support enabled.",sl,true). wait 1.
+			if core:getfield("kos disk space") > 10000 { 
+				e:push("mce_gui.ks"). 
+				output("Mission Control terminal support enabled.",sl,true). wait 1.
+			}
 			for m in ship:modulesnamed("ModuleProceduralFairing") {
 				select(m:part). wait 1. output("Fairing deployment enabled.",sl,true).
-				e:push("mce_fairings"). dsel(m:part). break.}
+				e:push("mce_fairings"). dsel(m:part). break.
+			}
 			for m in ship:modulesnamed("ModuleDeployableSolarPanel") {
 				select(m:part). wait 1. output("Power pruduction support enabled.",sl,true).
-				e:push("mce_panels.ks"). dsel(m:part). break.}
+				e:push("mce_panels.ks"). dsel(m:part). break.
+			}
 			if exists (f) deletepath(f). create(f).
 			log "local events is lex(" to f.
 			until e:length = 0 log open("0:/events/"+e:pop):readall():string + "," to f.
