@@ -1,5 +1,5 @@
 {
-	// LIB_LAZcalc.ks Version 2.1
+	// LIB_LAZcalc.ks Version 2.2
 	// Created by space-is-hard, Updated by TDW89, Refactored for KOS Mission Control
 	
 	local INFINITY is 2^64.
