@@ -1,6 +1,6 @@
 // APEX Basic Mission Profile Script w/ Kevin Gisi
 local mfile is "BASIC ORBITAL MISSION".
-local ver is "ver. APEX-BMP-0.1.1".
+local ver is "ver. APEX-BMP-0.1.2".
 
 local events is import("events.ks").
 local mission_control is import("lib_protocol.ks").
@@ -86,9 +86,12 @@ local mission is mission_control({ parameter seq, ev, next.
 	}).
 	
 	seq:add({
-		if availablethrust > 0 if alt:radar < 70000 lock throttle to .5.
-		else {until sn = 0 {stage. wait 0.}	action("Planetfall").}
-		if alt:radar < 10000 unlock steering.
+		if not paused {
+			if availablethrust > 0 and alt:radar < 70000 lock throttle to .5.
+			else if alt:radar > atmo pause(5).
+			else {until sn = 0 {stage. wait 0.}	action("Planetfall"). pause(5)}
+			if alt:radar < 10000 unlock steering.
+		}
 	}).
 }).
 
