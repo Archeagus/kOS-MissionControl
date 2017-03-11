@@ -1,12 +1,12 @@
-// APEX Master Mission Profile Script w/ Kevin Gisi
+// APEX Basic Mission Profile Script w/ Kevin Gisi
 local mfile is "BASIC ORBITAL MISSION".
-local ver is "ver. APEX-MMP-0.1.0".
+local ver is "ver. APEX-BMP-0.1.1".
 
 local events is import("events.ks").
 local mission_control is import("lib_protocol.ks").
 local transfer is import("lib_transfer.ks").
 
-local TARGET_ALTITUDE is 300000.
+local TARGET_ALTITUDE is 345000.
 local REENTRY_BURN_ALTITUDE is 100000.
 local ATMO is max(body:atm:height,30000).
 local freeze is transfer["freeze"].
@@ -74,19 +74,21 @@ local mission is mission_control({ parameter seq, ev, next.
 
 	seq:add({
 		if not paused {
-			lock throttle to 1.
-			wait until ship:maxthrust < 1.
-			lock throttle to 0.
-			until sn = 0 {stage. wait 0.}
-			action("Planetfall").
-			next().
+			if periapsis > 40000 {
+				lock throttle to max(1-(40000/alt:radar),.1).
+			}
+			else {
+				lock throttle to 0.
+				next().
+			}
 		}
+		wait 0.
 	}).
-
+	
 	seq:add({
+		if availablethrust > 0 if alt:radar < 70000 lock throttle to .5.
+		else {until sn = 0 {stage. wait 0.}	action("Planetfall").}
 		if alt:radar < 10000 unlock steering.
-		if ship:status = "Landed" action("Mission Complete").
-		wait 5. 
 	}).
 }).
 
