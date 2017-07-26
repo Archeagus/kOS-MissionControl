@@ -1,6 +1,6 @@
 // APEX Basic Mission Profile Script w/ Kevin Gisi
 local mfile is "BASIC ORBITAL MISSION".
-local ver is "ver. APEX-BMP-0.1.2".
+local ver is "ver. APEX-BMP-0.1.9".
 
 local events is import("events.ks").
 local mission_control is import("lib_protocol.ks").
